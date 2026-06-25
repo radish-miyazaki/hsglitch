@@ -1,0 +1,10 @@
+CLAUDE.md
+/docs/
+/.claude/
+DESIGN.md
+dist-newstyle/
+*.hi
+*.o
+.ghc.environment.*
+cabal.project.local
+.superpowers/

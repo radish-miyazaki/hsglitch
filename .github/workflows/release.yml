@@ -1,0 +1,40 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  binaries:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: haskell-actions/setup@v2
+        with:
+          ghc-version: "9.6"
+      - run: cabal update
+      - run: cabal build exe:hsglitch
+      - name: Stage binary
+        run: |
+          mkdir -p dist
+          bin=$(cabal list-bin exe:hsglitch)
+          cp "$bin" "dist/hsglitch-${{ matrix.os }}"
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/hsglitch-${{ matrix.os }}
+  hackage:
+    needs: binaries
+    runs-on: ubuntu-latest
+    environment: hackage
+    steps:
+      - uses: actions/checkout@v4
+      - uses: haskell-actions/setup@v2
+        with:
+          ghc-version: "9.6"
+      - run: cabal update
+      - run: cabal sdist
+      - name: Upload to Hackage
+        run: cabal upload --publish dist-newstyle/sdist/*.tar.gz
+        env:
+          HACKAGE_TOKEN: ${{ secrets.HACKAGE_TOKEN }}

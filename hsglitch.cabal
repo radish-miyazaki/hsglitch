@@ -1,0 +1,49 @@
+cabal-version:      3.0
+name:               hsglitch
+version:            0.1.0.0
+synopsis:           Composable, deterministic glitch-art pipeline CLI
+description:        A type-safe, reproducible glitch-art transformation CLI.
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             hsglitch contributors
+category:           Graphics
+build-type:         Simple
+extra-source-files: README.md
+                    CHANGELOG.md
+
+common warnings
+    ghc-options: -Wall
+
+library
+    import:           warnings
+    hs-source-dirs:   src
+    -- exposed-modules are added incrementally by later tasks
+    build-depends:    base >=4.18 && <5
+                    , JuicyPixels
+                    , bytestring
+                    , vector
+                    , random
+                    , mtl
+                    , filepath
+                    , optparse-applicative
+    default-language: Haskell2010
+
+executable hsglitch
+    import:           warnings
+    hs-source-dirs:   app
+    main-is:          Main.hs
+    build-depends:    base, hsglitch
+    default-language: Haskell2010
+
+test-suite hsglitch-test
+    import:             warnings
+    type:               exitcode-stdio-1.0
+    hs-source-dirs:     test
+    main-is:            Spec.hs
+    other-modules:      SmokeSpec
+    -- other-modules are added incrementally by later tasks
+    build-tool-depends: hspec-discover:hspec-discover
+    build-depends:      base, hsglitch, hspec, QuickCheck
+                      , JuicyPixels, vector, random, bytestring
+                      , directory, filepath
+    default-language:   Haskell2010
