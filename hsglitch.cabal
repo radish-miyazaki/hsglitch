@@ -17,7 +17,7 @@ common warnings
 library
     import:           warnings
     hs-source-dirs:   src
-    -- exposed-modules are added incrementally by later tasks
+    exposed-modules:  HsGlitch.Pixel
     build-depends:    base >=4.18 && <5
                     , JuicyPixels
                     , bytestring
@@ -41,6 +41,7 @@ test-suite hsglitch-test
     hs-source-dirs:     test
     main-is:            Spec.hs
     other-modules:      SmokeSpec
+                      , HsGlitch.PixelSpec
     -- other-modules are added incrementally by later tasks
     build-tool-depends: hspec-discover:hspec-discover
     build-depends:      base, hsglitch, hspec, QuickCheck
