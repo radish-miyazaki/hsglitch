@@ -78,7 +78,7 @@ pixelsort:threshold=0.4,direction=vertical,jitter=0.1
 
 ### rgbshift
 
-Shift the red, green, and blue channels independently by a fixed or random amount.
+Horizontally shift the red channel right and the blue channel left by `shift` pixels (the green channel stays fixed), wrapping around at the edges. With `random=true`, each channel's offset is drawn from `[-shift, shift]` using the seed.
 
 | Parameter | Type    | Default | Range / Values      |
 |-----------|---------|---------|---------------------|
