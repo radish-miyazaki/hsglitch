@@ -26,3 +26,17 @@ spec = do
             Right back <- readImageRGB8 path
             removeFile path
             pixelAt back 3 2 `shouldBe` pixelAt img 3 2
+
+    describe "writeImageAuto error paths" $ do
+        let img = generateImage (\x y -> PixelRGB8 (fromIntegral x) (fromIntegral y) 0) 2 2
+        it "returns Left for a non-existent output directory" $ do
+            result <- writeImageAuto "/nonexistent-dir-xyz/out.png" img
+            result `shouldSatisfy` isLeft
+        it "returns Left for an unsupported format" $ do
+            result <- writeImageAuto "out.gif" img
+            result `shouldSatisfy` isLeft
+
+    describe "readImageRGB8 error paths" $
+        it "returns Left for a non-existent file" $ do
+            result <- readImageRGB8 "nonexistent-file-xyz.png"
+            isLeft result `shouldBe` True

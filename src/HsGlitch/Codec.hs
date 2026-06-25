@@ -15,6 +15,7 @@ import Codec.Picture (
     saveJpgImage,
     savePngImage,
  )
+import Control.Exception (IOException, try)
 import Data.Char (toLower)
 import System.FilePath (takeExtension)
 
@@ -42,9 +43,16 @@ readImageRGB8 path = do
         Left err -> Left (CodecError err)
         Right dyn -> Right (convertRGB8 dyn)
 
--- | Write an RGB8 image, selecting the encoder by file extension.
+{- | Write an RGB8 image, selecting the encoder by file extension.
+I/O failures are caught and returned as 'Left CodecError'.
+-}
 writeImageAuto :: FilePath -> Image PixelRGB8 -> IO (Either CodecError ())
 writeImageAuto path img = case formatFromPath path of
     Left err -> pure (Left err)
-    Right FormatPng -> savePngImage path (ImageRGB8 img) >> pure (Right ())
-    Right FormatJpg -> saveJpgImage 90 path (ImageRGB8 img) >> pure (Right ())
+    Right FormatPng -> guarded (savePngImage path (ImageRGB8 img))
+    Right FormatJpg -> guarded (saveJpgImage 90 path (ImageRGB8 img))
+    where
+        guarded :: IO () -> IO (Either CodecError ())
+        guarded action = do
+            result <- try action :: IO (Either IOException ())
+            pure (either (Left . CodecError . show) Right result)
