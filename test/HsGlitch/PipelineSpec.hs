@@ -26,6 +26,17 @@ spec = do
         it "the empty pipeline is the identity" $
             pixels (runPipeline (mkStdGen 42) [] img) `shouldBe` pixels img
 
+        it "different seeds produce different output (seed-sensitivity)" $
+            pixels (runPipeline (mkStdGen 1) specs img)
+                `shouldNotBe` pixels (runPipeline (mkStdGen 2) specs img)
+
+        it "fixed seed + pipeline + input yields known pixel list (golden)" $
+            pixels (runPipeline (mkStdGen 2) specs img)
+                `shouldBe` [ PixelRGB8 10 20 90
+                           , PixelRGB8 40 50 30
+                           , PixelRGB8 70 80 60
+                           ]
+
     describe "runPipeline ordering" $
         it "order of filters affects the result" $ do
             let img2 = rowImage [PixelRGB8 70 80 90, PixelRGB8 40 50 60, PixelRGB8 10 20 30]
