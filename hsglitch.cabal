@@ -20,6 +20,7 @@ library
     exposed-modules:  HsGlitch.Pixel
                     , HsGlitch.Filter
                     , HsGlitch.Parser
+                    , HsGlitch.Pipeline
     build-depends:    base >=4.18 && <5
                     , JuicyPixels
                     , bytestring
@@ -46,6 +47,7 @@ test-suite hsglitch-test
                       , HsGlitch.PixelSpec
                       , HsGlitch.FilterSpec
                       , HsGlitch.ParserSpec
+                      , HsGlitch.PipelineSpec
     -- other-modules are added incrementally by later tasks
     build-tool-depends: hspec-discover:hspec-discover
     build-depends:      base, hsglitch, hspec, QuickCheck
