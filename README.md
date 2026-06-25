@@ -117,6 +117,7 @@ Omitting `-s` draws from the system random generator, so each run differs.
 | `0`  | Success |
 | `1`  | Pipeline DSL parse error |
 | `2`  | Image read or write error (codec / IO failure) |
+| `3`  | Unexpected error |
 
 Error messages are written to `stderr`.
 

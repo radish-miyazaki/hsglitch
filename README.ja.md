@@ -115,6 +115,7 @@ pixelsort:threshold=0.6 | rgbshift:shift=4 | pixelsort:direction=vertical
 | `0`    | 正常終了 |
 | `1`    | パイプライン DSL のパースエラー |
 | `2`    | 画像の読み込みまたは書き込みエラー（コーデック／IO の失敗） |
+| `3`    | 想定外のエラー |
 
 エラーメッセージは `stderr` に出力されます。
 
