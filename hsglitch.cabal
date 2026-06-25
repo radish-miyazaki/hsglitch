@@ -22,6 +22,7 @@ library
                     , HsGlitch.Parser
                     , HsGlitch.Pipeline
                     , HsGlitch.Codec
+                    , HsGlitch.CLI
     build-depends:    base >=4.18 && <5
                     , JuicyPixels
                     , bytestring
@@ -36,7 +37,7 @@ executable hsglitch
     import:           warnings
     hs-source-dirs:   app
     main-is:          Main.hs
-    build-depends:    base, hsglitch
+    build-depends:    base, hsglitch, JuicyPixels, optparse-applicative, random
     default-language: Haskell2010
 
 test-suite hsglitch-test
@@ -50,6 +51,7 @@ test-suite hsglitch-test
                       , HsGlitch.ParserSpec
                       , HsGlitch.PipelineSpec
                       , HsGlitch.CodecSpec
+                      , HsGlitch.CLISpec
     -- other-modules are added incrementally by later tasks
     build-tool-depends: hspec-discover:hspec-discover
     build-depends:      base, hsglitch, hspec, QuickCheck
