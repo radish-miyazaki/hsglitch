@@ -10,7 +10,25 @@ Haskell で書かれた、コンポーザブルで決定論的なグリッチア
 画像変換ステップを 1 つのパイプラインに組み合わせることができます。各ステップはシードで
 決定論的に制御されるため、同じコマンドは常に同じ出力を生成します。
 
-## ビルドとインストール
+## インストール
+
+### プレビルドバイナリ（推奨）
+
+[最新リリース](https://github.com/radish-miyazaki/hsglitch/releases/latest)からお使いのプラットフォーム向けバイナリをダウンロードし、実行権限を付与して PATH に配置します:
+
+```bash
+# Linux (x86_64)
+curl -L -o hsglitch https://github.com/radish-miyazaki/hsglitch/releases/latest/download/hsglitch-linux-x86_64
+# macOS (Apple Silicon)
+curl -L -o hsglitch https://github.com/radish-miyazaki/hsglitch/releases/latest/download/hsglitch-macos-arm64
+
+chmod +x hsglitch
+sudo mv hsglitch /usr/local/bin/
+```
+
+> macOS では、署名なしバイナリの初回実行時に Gatekeeper がブロックする場合があります。`xattr -d com.apple.quarantine /usr/local/bin/hsglitch` で隔離属性を解除してください。
+
+### ソースからビルド
 
 GHC 9.6 以上と cabal 3.0 以上が必要です。
 
@@ -31,8 +49,6 @@ cabal install exe:hsglitch
 ```bash
 cabal run hsglitch -- -i in.png -o out.png -p "pixelsort | rgbshift" -s 42
 ```
-
-> プレビルドバイナリ（GitHub Releases）と Hackage パッケージ（`cabal install hsglitch`）は、リリースタグが作成され次第提供されます。
 
 ## 使い方
 

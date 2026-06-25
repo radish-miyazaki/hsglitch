@@ -11,7 +11,25 @@ compose multiple image transformation passes into a single pipeline, controlled 
 simple DSL. Because every pass is seeded deterministically, the same command always
 produces the same output.
 
-## Build & Install
+## Install
+
+### Prebuilt binary (recommended)
+
+Download the binary for your platform from the [latest release](https://github.com/radish-miyazaki/hsglitch/releases/latest), then make it executable and put it on your PATH:
+
+```bash
+# Linux (x86_64)
+curl -L -o hsglitch https://github.com/radish-miyazaki/hsglitch/releases/latest/download/hsglitch-linux-x86_64
+# macOS (Apple Silicon)
+curl -L -o hsglitch https://github.com/radish-miyazaki/hsglitch/releases/latest/download/hsglitch-macos-arm64
+
+chmod +x hsglitch
+sudo mv hsglitch /usr/local/bin/
+```
+
+> On macOS, Gatekeeper may block the unsigned binary on first run. Clear the quarantine attribute with `xattr -d com.apple.quarantine /usr/local/bin/hsglitch`.
+
+### Build from source
 
 Requires GHC 9.6+ and cabal 3.0+.
 
@@ -32,8 +50,6 @@ Or run it directly from the source tree without installing:
 ```bash
 cabal run hsglitch -- -i in.png -o out.png -p "pixelsort | rgbshift" -s 42
 ```
-
-> Prebuilt binaries (GitHub Releases) and a Hackage package (`cabal install hsglitch`) will be available once a release is tagged.
 
 ## Usage
 
