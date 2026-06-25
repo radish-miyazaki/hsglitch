@@ -21,6 +21,7 @@ library
                     , HsGlitch.Filter
                     , HsGlitch.Parser
                     , HsGlitch.Pipeline
+                    , HsGlitch.Codec
     build-depends:    base >=4.18 && <5
                     , JuicyPixels
                     , bytestring
@@ -48,6 +49,7 @@ test-suite hsglitch-test
                       , HsGlitch.FilterSpec
                       , HsGlitch.ParserSpec
                       , HsGlitch.PipelineSpec
+                      , HsGlitch.CodecSpec
     -- other-modules are added incrementally by later tasks
     build-tool-depends: hspec-discover:hspec-discover
     build-depends:      base, hsglitch, hspec, QuickCheck
