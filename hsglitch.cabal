@@ -19,6 +19,7 @@ library
     hs-source-dirs:   src
     exposed-modules:  HsGlitch.Pixel
                     , HsGlitch.Filter
+                    , HsGlitch.Parser
     build-depends:    base >=4.18 && <5
                     , JuicyPixels
                     , bytestring
@@ -44,6 +45,7 @@ test-suite hsglitch-test
     other-modules:      SmokeSpec
                       , HsGlitch.PixelSpec
                       , HsGlitch.FilterSpec
+                      , HsGlitch.ParserSpec
     -- other-modules are added incrementally by later tasks
     build-tool-depends: hspec-discover:hspec-discover
     build-depends:      base, hsglitch, hspec, QuickCheck
