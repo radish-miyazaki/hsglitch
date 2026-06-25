@@ -21,11 +21,19 @@ cabal build all
 cabal test all
 ```
 
-Run directly without installing:
+Install the `hsglitch` executable onto your PATH (into cabal's bindir, e.g. `~/.local/bin` or `~/.cabal/bin`):
+
+```bash
+cabal install exe:hsglitch
+```
+
+Or run it directly from the source tree without installing:
 
 ```bash
 cabal run hsglitch -- -i in.png -o out.png -p "pixelsort | rgbshift" -s 42
 ```
+
+> Prebuilt binaries (GitHub Releases) and a Hackage package (`cabal install hsglitch`) will be available once a release is tagged.
 
 ## Usage
 

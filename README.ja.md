@@ -20,11 +20,19 @@ cabal build all
 cabal test all
 ```
 
-インストールせずに直接実行する場合:
+`hsglitch` 実行ファイルを PATH（cabal の bindir、例: `~/.local/bin` や `~/.cabal/bin`）にインストールする場合:
+
+```bash
+cabal install exe:hsglitch
+```
+
+インストールせずにソースツリーから直接実行する場合:
 
 ```bash
 cabal run hsglitch -- -i in.png -o out.png -p "pixelsort | rgbshift" -s 42
 ```
+
+> プレビルドバイナリ（GitHub Releases）と Hackage パッケージ（`cabal install hsglitch`）は、リリースタグが作成され次第提供されます。
 
 ## 使い方
 
