@@ -61,6 +61,28 @@ sortRun th = concatMap process . groupBy sameSide
             (p : _) | luminance p >= th -> sortOn luminance grp
             _ -> grp
 
--- | Placeholder; implemented in a later task.
+{- | Shift the R channel right and the B channel left by `shift` pixels
+(horizontal), keeping G fixed and wrapping at the edges. When `rand`
+is True, per-channel offsets are drawn uniformly from [-shift, shift].
+-}
 rgbShift :: Int -> Bool -> Image PixelRGB8 -> StdGen -> (Image PixelRGB8, StdGen)
-rgbShift _ _ img gen = (img, gen)
+rgbShift shift rand img gen0 =
+    let w = imageWidth img
+        ((rOff, bOff), gen1)
+            | not rand = ((shift, -shift), gen0)
+            | otherwise =
+                let (rs, g1) = randomR (-shift, shift) gen0
+                    (bs, g2) = randomR (-shift, shift) g1
+                 in ((rs, bs), g2)
+        wrap x = ((x `mod` w) + w) `mod` w
+        out =
+            generateImage
+                ( \x y ->
+                    let PixelRGB8 r _ _ = pixelAt img (wrap (x - rOff)) y
+                        PixelRGB8 _ g _ = pixelAt img x y
+                        PixelRGB8 _ _ b = pixelAt img (wrap (x - bOff)) y
+                     in PixelRGB8 r g b
+                )
+                w
+                (imageHeight img)
+     in (out, gen1)

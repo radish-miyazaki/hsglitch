@@ -1,7 +1,7 @@
 module HsGlitch.PixelSpec (spec) where
 
 import Codec.Picture (Image, PixelRGB8 (..), generateImage, pixelAt)
-import HsGlitch.Pixel (Direction (..), luminance, pixelSort)
+import HsGlitch.Pixel (Direction (..), luminance, pixelSort, rgbShift)
 import System.Random (mkStdGen)
 import Test.Hspec
 
@@ -50,3 +50,21 @@ spec = do
                 g0 = mkStdGen 1
                 (_, g1) = pixelSort 0.5 Horizontal 0.5 img g0
             show g1 `shouldNotBe` show g0
+
+    describe "rgbShift (random=False)" $
+        it "shifts R right and B left by `shift`, wrapping around" $ do
+            let x0 = PixelRGB8 10 20 30
+                x1 = PixelRGB8 40 50 60
+                x2 = PixelRGB8 70 80 90
+                img = rowImage [x0, x1, x2]
+                (out, _) = rgbShift 1 False img (mkStdGen 7)
+            -- out x: R from (x-1) mod 3, G from x, B from (x+1) mod 3
+            [pixelAt out 0 0, pixelAt out 1 0, pixelAt out 2 0]
+                `shouldBe` [PixelRGB8 70 20 60, PixelRGB8 10 50 90, PixelRGB8 40 80 30]
+
+    describe "rgbShift (shift=0)" $
+        it "is the identity" $ do
+            let img = rowImage [PixelRGB8 10 20 30, PixelRGB8 40 50 60]
+                (out, _) = rgbShift 0 False img (mkStdGen 7)
+            [pixelAt out 0 0, pixelAt out 1 0]
+                `shouldBe` [PixelRGB8 10 20 30, PixelRGB8 40 50 60]
