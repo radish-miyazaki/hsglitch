@@ -6,7 +6,11 @@ jobs:
   binaries:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            asset: hsglitch-linux-x86_64
+          - os: macos-latest
+            asset: hsglitch-macos-arm64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -20,23 +24,7 @@ jobs:
         run: |
           mkdir -p dist
           bin=$(cabal list-bin exe:hsglitch)
-          cp "$bin" "dist/hsglitch-${{ matrix.os }}"
+          cp "$bin" "dist/${{ matrix.asset }}"
       - uses: softprops/action-gh-release@v2
         with:
-          files: dist/hsglitch-${{ matrix.os }}
-  hackage:
-    needs: binaries
-    runs-on: ubuntu-latest
-    environment: hackage
-    steps:
-      - uses: actions/checkout@v4
-      - uses: haskell-actions/setup@v2
-        with:
-          ghc-version: "9.6"
-          cabal-version: "latest"
-      - run: cabal update
-      - run: cabal sdist
-      - name: Upload to Hackage
-        run: cabal upload --publish --token "$HACKAGE_TOKEN" dist-newstyle/sdist/*.tar.gz
-        env:
-          HACKAGE_TOKEN: ${{ secrets.HACKAGE_TOKEN }}
+          files: dist/${{ matrix.asset }}
