@@ -1,6 +1,9 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Main (main) where
 
 import Codec.Picture (Image, PixelRGB8)
+import Control.Exception (SomeException, catch, fromException, throwIO)
 import HsGlitch.CLI (Options (..), optionsParser)
 import HsGlitch.Codec (CodecError (..), readImageRGB8, writeImageAuto)
 import HsGlitch.Parser (ParseError (..), parsePipeline)
@@ -14,7 +17,7 @@ import Options.Applicative (
     progDesc,
     (<**>),
  )
-import System.Exit (ExitCode (ExitFailure), exitWith)
+import System.Exit (ExitCode (..), exitWith)
 import System.IO (hPutStrLn, stderr)
 import System.Random (initStdGen, mkStdGen)
 
@@ -25,7 +28,10 @@ main = do
             info
                 (optionsParser <**> helper)
                 (fullDesc <> progDesc "Transform an image into glitch art" <> header "hsglitch")
-    run opts
+    run opts `catch` \(e :: SomeException) ->
+        case fromException e :: Maybe ExitCode of
+            Just ec -> throwIO ec
+            Nothing -> failWith 3 ("unexpected error: " ++ show e)
 
 run :: Options -> IO ()
 run opts =
