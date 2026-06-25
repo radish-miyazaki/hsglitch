@@ -13,6 +13,7 @@ jobs:
       - uses: haskell-actions/setup@v2
         with:
           ghc-version: "9.6"
+          cabal-version: "latest"
       - run: cabal update
       - run: cabal build exe:hsglitch
       - name: Stage binary
@@ -32,9 +33,10 @@ jobs:
       - uses: haskell-actions/setup@v2
         with:
           ghc-version: "9.6"
+          cabal-version: "latest"
       - run: cabal update
       - run: cabal sdist
       - name: Upload to Hackage
-        run: cabal upload --publish dist-newstyle/sdist/*.tar.gz
+        run: cabal upload --publish --token "$HACKAGE_TOKEN" dist-newstyle/sdist/*.tar.gz
         env:
           HACKAGE_TOKEN: ${{ secrets.HACKAGE_TOKEN }}
