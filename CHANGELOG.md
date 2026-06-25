@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.1.0.0] - 2026-06-25
+
 ### Added
 - Initial project scaffolding.
 - PNG and JPEG image read/write with automatic RGB8 normalisation via JuicyPixels.
