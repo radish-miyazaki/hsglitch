@@ -11,7 +11,7 @@ compose multiple image transformation passes into a single pipeline, controlled 
 simple DSL. Because every pass is seeded deterministically, the same command always
 produces the same output.
 
-## Build
+## Build & Install
 
 Requires GHC 9.6+ and cabal 3.0+.
 
@@ -21,35 +21,104 @@ cabal build all
 cabal test all
 ```
 
-## Usage
+Run directly without installing:
 
 ```bash
-hsglitch -i in.png -o out.png -p "pixelsort:threshold=0.5 | rgbshift:shift=10" -s 42
+cabal run hsglitch -- -i in.png -o out.png -p "pixelsort | rgbshift" -s 42
+```
+
+## Usage
+
+```
+hsglitch -i <FILE> -o <FILE> -p <DSL> [-s <INT>]
 ```
 
 **Flags**
 
-| Flag | Description |
-|------|-------------|
-| `-i` | Input image path |
-| `-o` | Output image path |
-| `-p` | Pipeline DSL string (passes separated by `\|`) |
-| `-s` | Random seed (integer; omit for a random seed) |
+| Flag | Long form | Required | Description |
+|------|-----------|----------|-------------|
+| `-i` | `--input`    | Yes | Input image path (PNG or JPEG) |
+| `-o` | `--output`   | Yes | Output image path (PNG or JPEG) |
+| `-p` | `--pipeline` | Yes | Filter pipeline DSL string |
+| `-s` | `--seed`     | No  | Random seed (integer); omit for system randomness |
+
+**Concrete example**
+
+```bash
+cabal run hsglitch -- \
+  -i photo.jpg \
+  -o glitched.png \
+  -p "pixelsort:threshold=0.3,direction=vertical | rgbshift:shift=8,random=true" \
+  -s 42
+```
 
 ## Pipeline DSL
 
-Passes are separated by `|`. Each pass is `name:key=value,key=value,...`.
+Steps are separated by `|`. Each step has the form:
 
-Example passes:
+```
+name[:key=value[,key=value...]]
+```
 
-- `pixelsort:threshold=0.5` — sort pixels by brightness above threshold
-- `rgbshift:shift=10` — shift RGB channels by N pixels
-- `noise:amount=0.1,seed=7` — add uniform noise
+### pixelsort
+
+Sort contiguous pixel runs by brightness within each row or column.
+
+| Parameter   | Type            | Default      | Range / Values          |
+|-------------|-----------------|--------------|-------------------------|
+| `threshold` | float           | `0.5`        | `0.0` – `1.0`           |
+| `direction` | string          | `horizontal` | `horizontal`, `vertical` |
+| `jitter`    | float           | `0.0`        | `0.0` – `1.0`           |
+
+Example:
+
+```
+pixelsort:threshold=0.4,direction=vertical,jitter=0.1
+```
+
+### rgbshift
+
+Shift the red, green, and blue channels independently by a fixed or random amount.
+
+| Parameter | Type    | Default | Range / Values      |
+|-----------|---------|---------|---------------------|
+| `shift`   | integer | `5`     | any integer (pixels)|
+| `random`  | bool    | `false` | `true`, `false`     |
+
+Example:
+
+```
+rgbshift:shift=12,random=true
+```
+
+### Composing steps
+
+Multiple steps are chained with `|`; they execute left to right, each receiving
+the output of the previous step:
+
+```
+pixelsort:threshold=0.6 | rgbshift:shift=4 | pixelsort:direction=vertical
+```
 
 ## Reproducibility
 
-Setting `-s <seed>` guarantees bit-for-bit identical output across runs and platforms,
-making it easy to version-control your glitch recipes.
+Passing `-s <INT>` (any integer seed) guarantees **binary-level identical output**
+across runs on the same machine and across platforms. This means:
+
+- Same input file + same pipeline string + same seed → identical output bytes.
+- Useful for version-controlling glitch recipes and sharing them reproducibly.
+
+Omitting `-s` draws from the system random generator, so each run differs.
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0`  | Success |
+| `1`  | Pipeline DSL parse error |
+| `2`  | Image read or write error (codec / IO failure) |
+
+Error messages are written to `stderr`.
 
 ## Contributing
 
